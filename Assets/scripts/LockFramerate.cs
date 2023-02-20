@@ -5,6 +5,14 @@ public class LockFramerate : MonoBehaviour
     void Start()
     {
         QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = 60;
+
+        if (Application.isEditor)
+        {
+            Application.targetFrameRate = 60; // just to make sure stuff looks good at the most standard framerate
+        }
+        else 
+        {
+            Application.targetFrameRate = 999;
+        }        
     }
 }

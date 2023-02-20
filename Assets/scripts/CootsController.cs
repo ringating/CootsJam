@@ -9,9 +9,10 @@ public class CootsController : MonoBehaviour
     public enum State
     {
         idle,
-        move,
+        walk,
     }
 
+    [HideInInspector]
     public State currState;
     private State nextState;
     
@@ -23,19 +24,19 @@ public class CootsController : MonoBehaviour
         cc = GetComponent<CharacterController>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         nextState = currState; // do this so all you have to do to change state during the update loop is set nextState to something new
 
-        // pick the proper update loop based on the current state
+        // ############## pick the proper update loop based on the current state ##############
         switch (currState)
         {
             case State.idle:
                 if (Input.GetKey(KeyCode.W))
-                    nextState = State.move;
+                    nextState = State.walk;
                 break;
 
-            case State.move:
+            case State.walk:
                 if (!Input.GetKey(KeyCode.W))
                     nextState = State.idle;
                 break;
@@ -45,16 +46,16 @@ public class CootsController : MonoBehaviour
                 break;
         }
 
-        // change state, if necessary
+        // ############## change state, if necessary ##############
         if (currState != nextState)
         {
             switch (nextState)
             {
                 case State.idle:
-                    animator.CrossFadeInFixedTime("idle", oneFrame * 2f);
+                    //animator.CrossFadeInFixedTime("idle", oneFrame * 2f);
                     break;
 
-                case State.move:
+                case State.walk:
                     animator.CrossFadeInFixedTime("walk", oneFrame * 2f);
                     break;
 
