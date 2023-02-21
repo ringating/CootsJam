@@ -18,6 +18,7 @@ public class CootsController : MonoBehaviour
     
     CharacterController cc;
     public Animator animator;
+    public Animator impactAnimator;
 
     void Start()
     {
@@ -57,6 +58,7 @@ public class CootsController : MonoBehaviour
 
                 case State.walk:
                     animator.CrossFadeInFixedTime("walk", oneFrame * 2f);
+                    impactAnimator.CrossFade("impact", 0);
                     break;
 
                 default:
