@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// this isn't perfectly smooth, just rely on the RB version tbh
+
 public class SmoothFollow : MonoBehaviour
 {
     public float lerpAlpha = 0.5f;
@@ -18,15 +20,24 @@ public class SmoothFollow : MonoBehaviour
 
 	private void Update()
 	{
+		bool special = false;
 		if (timer > timeBetweenLerps)
 		{
+			//print(timer);
 			timer = 0;
 
-			prevPos = transform.position;
+			prevPos = nextPos;
 			nextPos = Vector3.Lerp(transform.position, target.position, lerpAlpha);
+
+			special = true;
 		}
 		timer += Time.deltaTime;
 
+		float x = transform.position.x;
 		transform.position = Vector3.Lerp(prevPos, nextPos, timer/timeBetweenLerps);
+		if (special)
+			Debug.LogWarning($"{transform.position.x - x}");
+		else
+			print($"{transform.position.x - x}");
 	}
 }

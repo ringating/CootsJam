@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CootsController : MonoBehaviour
 {
+    public float walkSpeed = 5f;
+    public float turnRate = 360f;
     public float attackDuration = 0.27f;
 
     const float oneFrame = 1f / 60f;
@@ -19,15 +21,18 @@ public class CootsController : MonoBehaviour
     public State currState;
     private State nextState;
     private bool restartState = false;
-    
-    CharacterController cc;
+    private float targetYaw;
+
+    //public CharacterController cc;
+    public Rigidbody rb;
     public Animator animator;
     public Animator impactAnimator;
     public Slash slashScript;
+    public CameraController camScript;
 
     void Start()
     {
-        cc = GetComponent<CharacterController>();
+        //cc = GetComponent<CharacterController>();
     }
 
     // ############## per-state vars ##############
@@ -46,13 +51,29 @@ public class CootsController : MonoBehaviour
         switch (currState)
         {
             case State.idle:
-                if (Input.GetKey(KeyCode.W)) nextState = State.walk;
-                if (Input.GetMouseButton(0)) nextState = State.attack;
+                if (camScript.currState == CameraController.State.target)
+                    SetTargetYawFromVelocity(camScript.currentTarget.transform.position - transform.position);
+                if (camScript.GetWorldMovementVector() != Vector3.zero)
+                    nextState = State.walk;
+                if (Input.GetMouseButton(0))
+                    nextState = State.attack;
                 break;
 
             case State.walk:
-                if (!Input.GetKey(KeyCode.W)) nextState = State.idle;
+
+                Vector3 vel = camScript.GetWorldMovementVector() * walkSpeed * Time.fixedDeltaTime;
+                rb.MovePosition(rb.position + vel);
+
+                if (camScript.GetWorldMovementVector() == Vector3.zero) nextState = State.idle;
+                else
+                {
+                    if (camScript.currState == CameraController.State.target)
+                        SetTargetYawFromVelocity(camScript.currentTarget.transform.position - transform.position);
+                    else
+                        SetTargetYawFromVelocity(vel);
+                }
                 if (Input.GetMouseButton(0)) nextState = State.attack;
+
                 break;
 
             case State.attack:
@@ -60,8 +81,8 @@ public class CootsController : MonoBehaviour
                 if (attackButtonReleased && Input.GetMouseButton(0)) bufferAnotherAttack = true;
                 if (attackTimer > attackDuration)
                 {
-                    if (bufferAnotherAttack) { restartState = true; print("doing another attack"); }
-                    else { nextState = State.idle; print("going back to idle"); }
+                    if (bufferAnotherAttack) { restartState = true; /*print("doing another attack");*/ }
+                    else { nextState = State.idle; /*print("going back to idle");*/ }
                 }
                 attackTimer += Time.deltaTime;
                 break;
@@ -82,10 +103,11 @@ public class CootsController : MonoBehaviour
 
                 case State.walk:
                     animator.CrossFadeInFixedTime("walk", oneFrame * 2f);
-                    impactAnimator.CrossFade("impact", 0);
+                    //impactAnimator.CrossFade("impact", 0);
                     break;
 
                 case State.attack:
+
                     attackButtonReleased = false;
                     bufferAnotherAttack = false;
                     attackTimer = 0;
@@ -93,6 +115,14 @@ public class CootsController : MonoBehaviour
                     if (attackFlipFlop) animator.CrossFadeInFixedTime("attack right", oneFrame);
                     else animator.CrossFadeInFixedTime("attack left", oneFrame);
                     attackFlipFlop = !attackFlipFlop;
+
+                    if (camScript.currState != CameraController.State.target) 
+                    { 
+                        Vector3 moveVec = camScript.GetWorldMovementVector();
+                        if (moveVec != Vector3.zero) SetTargetYawFromVelocity(moveVec);
+                        rb.rotation = Quaternion.Euler(0, targetYaw, 0); // snap
+                    }
+
                     break;
 
                 default:
@@ -103,5 +133,15 @@ public class CootsController : MonoBehaviour
             currState = nextState;
             restartState = false;
         }
+
+        // rotate to face correct direction (a State-independent behavior)
+        float angle = Mathf.MoveTowardsAngle(rb.rotation.eulerAngles.y, targetYaw, turnRate * Time.fixedDeltaTime);
+        rb.MoveRotation(Quaternion.Euler(0, angle, 0));
+    }
+
+    private void SetTargetYawFromVelocity(Vector3 velocity)
+    {
+        velocity = new Vector3(velocity.x, 0, velocity.z);
+        targetYaw = Vector3.SignedAngle(Vector3.forward, velocity, Vector3.up);
     }
 }
