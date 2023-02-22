@@ -132,7 +132,7 @@ public class CameraController : MonoBehaviour
         float closestDistance = 100;
         foreach (Targetable t in targets)
         {
-            if (t.enabled) // can just disable Targeable scripts to make an object no longer be considered for targeting
+            if (t.enabled && PositionIsOnScreen(t.transform.position)) // can just disable Targeable scripts to make an object no longer be considered for targeting
             {
                 float distance = Vector3.Distance(coots.transform.position, t.transform.position);
                 if(distance < closestDistance)
@@ -149,6 +149,7 @@ public class CameraController : MonoBehaviour
         else 
         {
             // TODO: something to indicate that targeting failed (maybe a small camera shake?)
+            currentTarget = null;
             currState = State.free;
         }
     }
@@ -184,5 +185,21 @@ public class CameraController : MonoBehaviour
         behindAndAboveCoots.y = 0;
         behindAndAboveCoots = (behindAndAboveCoots.normalized * targetCamDistanceBehindCoots) + (Vector3.up * targetCamDistanceAboveCoots);
         return coots.transform.position + behindAndAboveCoots;
+    }
+
+    public bool PositionIsOnScreen(Vector3 worldPosition)
+    {
+        Vector2 viewportPos = Camera.main.ScreenToViewportPoint(Camera.main.WorldToScreenPoint(worldPosition));
+        bool inViewPort =
+            viewportPos.x <= 1 && 
+            viewportPos.x >= 0 &&
+            viewportPos.y <= 1 &&
+            viewportPos.y >= 0
+        ;
+
+        Vector3 camToTarget = worldPosition - Camera.main.transform.position;
+        bool inFrontOfCamera = Vector3.Dot(camToTarget, Camera.main.transform.forward) > 0;
+
+        return inViewPort && inFrontOfCamera;
     }
 }
