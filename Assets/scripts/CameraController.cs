@@ -35,6 +35,8 @@ public class CameraController : MonoBehaviour
     Vector3 prevPos;
     Quaternion prevRotation;
 
+    private const float resolveDistance = 0.25f;
+
     void Start()
     {
         pitch = freeCamFocalPoint.localRotation.eulerAngles.x;
@@ -54,7 +56,7 @@ public class CameraController : MonoBehaviour
         {
             case State.free:
 
-                pitch = Mathf.Clamp(pitch - Input.GetAxisRaw("Mouse Y"), -80, 80);
+                pitch = Mathf.Clamp(pitch - Input.GetAxisRaw("Mouse Y"), -50, 80);
                 yaw += Input.GetAxisRaw("Mouse X");
                 freeCamFocalPoint.localRotation = Quaternion.Euler(pitch, yaw, 0);
 
@@ -111,17 +113,22 @@ public class CameraController : MonoBehaviour
                 break;
         }
 
-        // resolve the camera towards the current focal point
-        /*Physics.Raycast(
-            currentFocalPoint,
-            cam.position - currentFocalPoint, 
-            out RaycastHit hitInfo, 
-            Vector3.Distance(cam.position, currentFocalPoint), 
-            LayerMask.GetMask("terrain"),
-            QueryTriggerInteraction.Ignore
-        );*/
+		// resolve the camera towards the current focal point
+		bool hit = Physics.Raycast(
+			currentFocalPoint,
+			cam.position - currentFocalPoint,
+			out RaycastHit hitInfo,
+			Vector3.Distance(cam.position, currentFocalPoint) + resolveDistance,
+			LayerMask.GetMask("terrain"),
+			QueryTriggerInteraction.Ignore
+		);
 
-        transitionTimer += Time.deltaTime;
+        if (hit)
+        {
+            cam.position = Vector3.MoveTowards(hitInfo.point, currentFocalPoint, resolveDistance);
+        }
+
+		transitionTimer += Time.deltaTime;
     }
 
     private void GetNewTarget() 
