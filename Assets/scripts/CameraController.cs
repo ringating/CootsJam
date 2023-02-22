@@ -10,7 +10,15 @@ public class CameraController : MonoBehaviour
         target
     }
 
-    public Transform focalPoint;
+    public Transform cam;
+    public Transform camFollowPoint;
+
+    public Transform freeCamFocalPoint;
+    public Transform freeCamFollowPoint;
+
+    public Transform targetCamFocalPoint;
+    public Transform targetCamFollowPoint;
+    public Targetable currentTarget;
 
     [HideInInspector]
     public State currState;
@@ -19,29 +27,72 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        pitch = focalPoint.localRotation.eulerAngles.x;
-        yaw = focalPoint.localRotation.eulerAngles.y;
+        pitch = freeCamFocalPoint.localRotation.eulerAngles.x;
+        yaw = freeCamFocalPoint.localRotation.eulerAngles.y;
 
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void Update()
+    void LateUpdate()
     {
+        Vector3 currentFocalPoint;
+        Vector3 currentFollowPoint;
+
         switch (currState)
         {
             case State.free:
+
                 pitch = Mathf.Clamp(pitch - Input.GetAxisRaw("Mouse Y"), -80, 80);
                 yaw += Input.GetAxisRaw("Mouse X");
-                focalPoint.localRotation = Quaternion.Euler(pitch, yaw, 0);
+                freeCamFocalPoint.localRotation = Quaternion.Euler(pitch, yaw, 0);
+
+                cam.position = freeCamFollowPoint.position;
+                cam.rotation = freeCamFollowPoint.rotation;
+
+                currentFocalPoint = freeCamFocalPoint.position;
+                currentFollowPoint = freeCamFollowPoint.position;
+
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    currState = State.target;
+                    GetNewTarget();
+                }
+
                 break;
 
             case State.target:
+                currentFocalPoint = targetCamFocalPoint.position;
+                currentFollowPoint = targetCamFollowPoint.position;
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    currState = State.free;
+                }
                 break;
 
             default:
+                currentFocalPoint = freeCamFocalPoint.position;
+                currentFollowPoint = freeCamFollowPoint.position;
                 break;
         }
-        
-        
+
+        // resolve the camera towards the current focal point
+        /*Physics.Raycast(
+            currentFocalPoint,
+            cam.position - currentFocalPoint, 
+            out RaycastHit hitInfo, 
+            Vector3.Distance(cam.position, currentFocalPoint), 
+            LayerMask.GetMask("terrain"),
+            QueryTriggerInteraction.Ignore
+        );*/
+    }
+
+    private void GetNewTarget() 
+    {
+
+    }
+
+    private void SetCurrentPitchAndYaw()
+    {
+
     }
 }
