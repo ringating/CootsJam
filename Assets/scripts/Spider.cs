@@ -21,5 +21,6 @@ public class Spider : Hurtable
     public override void Hurt(Attack attack)
     {
         shake.Shake(attack.hitShakeDuration);
+        CameraShake.instance.AddShake(attack.camShakeDuration, attack.camShakeMagnitude, attack.camShakeFrequency);
     }
 }

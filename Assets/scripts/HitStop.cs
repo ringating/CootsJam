@@ -8,6 +8,8 @@ public class HitStop : MonoBehaviour
 
     public static HitStop instance;
 
+    public bool stopped { get { return Time.timeScale != 1; } }
+
 	private void Awake()
 	{
 		if (instance)
