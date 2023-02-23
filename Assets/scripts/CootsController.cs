@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CootsController : MonoBehaviour
+public class CootsController : Hurtable
 {
     public float walkSpeed = 5f;
+    public float hurtSpeed = 5f;
     public float dodgeSpeed = 10f;
     public float dodgeTurnRate = 180f;
     public float turnRate = 360f;
@@ -18,6 +19,9 @@ public class CootsController : MonoBehaviour
         walk,
         attack,
         dodge,
+        hurt,
+        katanaStance,
+        katanaTeleport,
     }
 
     [HideInInspector]
@@ -32,6 +36,17 @@ public class CootsController : MonoBehaviour
     public Animator impactAnimator;
     public Slash slashScript;
     public CameraController camScript;
+    public AudioSource audioSource;
+
+    public AudioClip attackA;
+    public AudioClip attackB;
+    public AudioClip dodge;
+    public AudioClip[] walkSounds;
+
+    const float attackAVol = 0.8f;
+    const float attackBVol = 0.8f;
+    const float dodgeVol = 0.8f;
+    const float walkVol = 0.4f;
 
     void Start()
     {
@@ -53,6 +68,14 @@ public class CootsController : MonoBehaviour
     public bool canCancelDodge;
     [HideInInspector]
     public bool forceEndDodge;
+
+    // hurt
+    [HideInInspector]
+    public bool stopHurtMovement;
+    [HideInInspector]
+    public bool canDodgeOutOfHurt;
+    [HideInInspector]
+    public bool forceEndHurt;
 
     void FixedUpdate()
     {
@@ -135,6 +158,34 @@ public class CootsController : MonoBehaviour
 
                 break;
 
+            case State.hurt:
+
+                if (!stopHurtMovement)
+                {
+                    rb.MovePosition(rb.position - (YawToVector(targetYaw) * hurtSpeed * Time.fixedDeltaTime));
+                }
+
+                if (forceEndHurt) 
+                {
+                    nextState = State.idle;
+                }
+
+                if (canDodgeOutOfHurt)
+                {
+                    if (Input.GetKey(KeyCode.LeftShift))
+                    {
+                        nextState = State.dodge;
+                    }
+                }
+
+                break;
+
+            case State.katanaStance:
+                break;
+
+            case State.katanaTeleport:
+                break;
+
             default:
                 Debug.LogError("bad");
                 break;
@@ -151,6 +202,7 @@ public class CootsController : MonoBehaviour
 
                 case State.walk:
                     animator.CrossFadeInFixedTime("walk", oneFrame * 2f);
+                    PlayRandomWalkSound();
                     //impactAnimator.CrossFade("impact", 0);
                     break;
 
@@ -160,8 +212,16 @@ public class CootsController : MonoBehaviour
                     bufferAnotherAttack = false;
                     attackTimer = 0;
                     slashScript.Play();
-                    if (attackFlipFlop) animator.CrossFadeInFixedTime("attack right", oneFrame);
-                    else animator.CrossFadeInFixedTime("attack left", oneFrame);
+                    if (attackFlipFlop)
+                    {
+                        animator.CrossFadeInFixedTime("attack right", oneFrame);
+                        audioSource.PlayOneShot(attackA, attackAVol);
+                    }
+                    else 
+                    { 
+                        animator.CrossFadeInFixedTime("attack left", oneFrame);
+                        audioSource.PlayOneShot(attackB, attackBVol);
+                    }
                     attackFlipFlop = !attackFlipFlop;
 
                     // when not targeting, snap to input dir (if there is one). when targeting, snap to target.
@@ -192,6 +252,12 @@ public class CootsController : MonoBehaviour
                         rb.rotation = Quaternion.Euler(0, targetYaw, 0);
                     }
 
+                    audioSource.PlayOneShot(dodge, dodgeVol);
+
+                    break;
+
+                case State.hurt:
+                    // all of this takes place in Hurt() instead, since that's the only place that this state is ever entered from
                     break;
 
                 default:
@@ -223,5 +289,30 @@ public class CootsController : MonoBehaviour
     public Vector3 YawToVector(float y)
     {
         return Quaternion.Euler(0, y, 0) * Vector3.forward;
+    }
+
+	public override void Hurt(Attack attack)
+	{
+        if ( !(currState == State.dodge && invincible) )
+        {
+            animator.CrossFadeInFixedTime("hurt", oneFrame);
+
+            audioSource.PlayOneShot(attack.toPlayOnHit, attack.toPlayOnHitVolume);
+
+            currState = State.hurt; // setting nextState here wouldn't do anything
+
+            SetTargetYawFromVelocity(-attack.transform.forward); // face the reverse direction that the attack is facing 
+            rb.rotation = Quaternion.Euler(0, targetYaw, 0); // snap
+
+            stopHurtMovement = false;
+            canDodgeOutOfHurt = false;
+            forceEndHurt = false;
+        }
+    }
+
+    public void PlayRandomWalkSound()
+    {
+        int i = Random.Range(0, walkSounds.Length);
+        audioSource.PlayOneShot(walkSounds[i], walkVol);
     }
 }

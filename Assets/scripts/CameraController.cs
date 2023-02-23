@@ -8,6 +8,14 @@ public class CameraController : MonoBehaviour
     public float targetCamDistanceAboveCoots = 3f;
     public float targetTransitionDuration = 0.25f;
 
+    public AudioClip targetOn;
+    public AudioClip targetOff;
+
+    public AudioSource audioSource;
+
+    const float targetOnVol = 0.8f;
+    const float targetOffVol = 0.8f;
+
     public enum State
     {
         free,
@@ -81,6 +89,8 @@ public class CameraController : MonoBehaviour
                         transitionTimer = 0;
                         prevPos = cam.position;
                         prevRotation = cam.rotation;
+
+                        audioSource.PlayOneShot(targetOn, targetOnVol);
                     }
                 }
 
@@ -105,6 +115,8 @@ public class CameraController : MonoBehaviour
                     transitionTimer = 0;
                     prevPos = cam.position;
                     prevRotation = cam.rotation;
+
+                    audioSource.PlayOneShot(targetOff, targetOffVol);
                 }
 
                 break;

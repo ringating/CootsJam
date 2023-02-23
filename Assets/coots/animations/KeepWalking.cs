@@ -10,6 +10,7 @@ public class KeepWalking : MonoBehaviour
         if (coots.currState == CootsController.State.walk)
         {
             animator.CrossFade("walk", 0);
+            coots.PlayRandomWalkSound();
         }
     }
 }
