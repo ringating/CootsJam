@@ -5,6 +5,8 @@ using UnityEngine;
 public class CootsController : MonoBehaviour
 {
     public float walkSpeed = 5f;
+    public float dodgeSpeed = 10f;
+    public float dodgeTurnRate = 180f;
     public float turnRate = 360f;
     public float attackDuration = 0.27f;
 
@@ -103,6 +105,33 @@ public class CootsController : MonoBehaviour
                 break;
 
             case State.dodge:
+
+                if (forceEndDodge)
+                {
+                    nextState = State.idle;
+                }
+
+                if (canCancelDodge)
+                {
+                    if (camScript.GetWorldMovementVector() != Vector3.zero)
+                        nextState = State.walk;
+                    if (Input.GetMouseButton(0))
+                        nextState = State.attack;
+                    if (Input.GetKey(KeyCode.LeftShift))
+                        restartState = true;
+                }
+                else
+                {
+                    // this is the period of time before the dodge lands on the ground
+                    Vector3 inputVec = camScript.GetWorldMovementVector();
+                    if (inputVec.magnitude > 0)
+                    {
+                        targetYaw = Mathf.MoveTowardsAngle(targetYaw, VectorToYaw(inputVec), dodgeTurnRate * Time.fixedDeltaTime);
+                    }
+                    Vector3 v = YawToVector(targetYaw) * dodgeSpeed * Time.fixedDeltaTime;
+                    rb.MovePosition(rb.position + v);
+                }
+
                 break;
 
             default:
@@ -134,16 +163,31 @@ public class CootsController : MonoBehaviour
                     else animator.CrossFadeInFixedTime("attack left", oneFrame);
                     attackFlipFlop = !attackFlipFlop;
 
+                    // snap to targetYaw
                     if (camScript.currState != CameraController.State.target) 
                     { 
                         Vector3 moveVec = camScript.GetWorldMovementVector();
                         if (moveVec != Vector3.zero) SetTargetYawFromVelocity(moveVec);
-                        rb.rotation = Quaternion.Euler(0, targetYaw, 0); // snap
+                        rb.rotation = Quaternion.Euler(0, targetYaw, 0);
                     }
 
                     break;
 
                 case State.dodge:
+
+                    animator.CrossFade("dodge", 0);
+                    forceEndDodge = false;
+                    canCancelDodge = false;
+                    invincible = true;
+
+                    // snap to targetYaw
+                    if (camScript.currState != CameraController.State.target)
+                    {
+                        Vector3 moveVec = camScript.GetWorldMovementVector();
+                        if (moveVec != Vector3.zero) SetTargetYawFromVelocity(moveVec);
+                        rb.rotation = Quaternion.Euler(0, targetYaw, 0);
+                    }
+
                     break;
 
                 default:
@@ -164,5 +208,16 @@ public class CootsController : MonoBehaviour
     {
         velocity = new Vector3(velocity.x, 0, velocity.z);
         targetYaw = Vector3.SignedAngle(Vector3.forward, velocity, Vector3.up);
+    }
+
+    public float VectorToYaw(Vector3 v)
+    {
+        v = new Vector3(v.x, 0, v.z);
+        return Vector3.SignedAngle(Vector3.forward, v, Vector3.up);
+    }
+
+    public Vector3 YawToVector(float y)
+    {
+        return Quaternion.Euler(0, y, 0) * Vector3.forward;
     }
 }

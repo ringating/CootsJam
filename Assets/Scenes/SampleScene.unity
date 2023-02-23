@@ -175,7 +175,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9fdc2c6d5284b9c4e8a716ea32f06d28, type: 2}
+  - {fileID: 2100000, guid: b8ff4337c3c75db4093f4c32357e3d55, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2037,6 +2037,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 5
+  dodgeSpeed: 8
+  dodgeTurnRate: 360
   turnRate: 720
   attackDuration: 0.27
   currState: 0
