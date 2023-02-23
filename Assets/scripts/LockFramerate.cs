@@ -8,11 +8,11 @@ public class LockFramerate : MonoBehaviour
 
         if (Application.isEditor)
         {
-            Application.targetFrameRate = 20; // just to make sure stuff looks good at the most standard framerate
+            Application.targetFrameRate = 999; // just to make sure stuff looks good at the most standard framerate
         }
         else 
         {
             Application.targetFrameRate = 999;
-        }        
+        }
     }
 }

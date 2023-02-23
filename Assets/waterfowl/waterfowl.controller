@@ -1,17 +1,17 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1102 &-7698632807490976988
+--- !u!1102 &-6466870583443841205
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: spider slash
+  m_Name: waterfowl
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: -292535995611505196}
+  - {fileID: -2268429125622899074}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -21,13 +21,13 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 47a03d421cf328c4cbfaa8430985658e, type: 2}
+  m_Motion: {fileID: 7400000, guid: 05b0d35a46671be43a8f6686c3545844, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1107 &-345512644783168474
+--- !u!1107 &-2617190477594922213
 AnimatorStateMachine:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -37,11 +37,11 @@ AnimatorStateMachine:
   m_Name: Base Layer
   m_ChildStates:
   - serializedVersion: 1
-    m_State: {fileID: -7698632807490976988}
-    m_Position: {x: 320, y: 170, z: 0}
+    m_State: {fileID: -6466870583443841205}
+    m_Position: {x: 290, y: 110, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 3610230738420578444}
-    m_Position: {x: 235, y: 65, z: 0}
+    m_State: {fileID: 2369458987854259937}
+    m_Position: {x: 290, y: 180, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -51,8 +51,8 @@ AnimatorStateMachine:
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: 3610230738420578444}
---- !u!1101 &-292535995611505196
+  m_DefaultState: {fileID: 2369458987854259937}
+--- !u!1101 &-2268429125622899074
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -61,14 +61,14 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions: []
   m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 3610230738420578444}
+  m_DstState: {fileID: 2369458987854259937}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
   m_TransitionDuration: 0
-  m_TransitionOffset: 1.5000006
-  m_ExitTime: 1.0000002
+  m_TransitionOffset: 0.0021551854
+  m_ExitTime: 1
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -80,13 +80,13 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: slash parent
+  m_Name: waterfowl
   serializedVersion: 5
   m_AnimatorParameters: []
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
-    m_StateMachine: {fileID: -345512644783168474}
+    m_StateMachine: {fileID: -2617190477594922213}
     m_Mask: {fileID: 0}
     m_Motions: []
     m_Behaviours: []
@@ -96,7 +96,7 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
---- !u!1102 &3610230738420578444
+--- !u!1102 &2369458987854259937
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -116,7 +116,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: e82cd3cac2094a44d9733d3c77442486, type: 2}
+  m_Motion: {fileID: 7400000, guid: 9d23fb5f953af724db971b48d0418bac, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

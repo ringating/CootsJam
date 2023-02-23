@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class CootsController : Hurtable
 {
+    public static CootsController instance;
+
     public float walkSpeed = 5f;
     public float hurtSpeed = 5f;
+    public float iaiStanceSpeed = 1f;
+    public float iaiStanceTurnRate = 0f;
+    public float iaiTeleportDistance = 4f;
     public float dodgeSpeed = 10f;
-    public float dodgeTurnRate = 180f;
-    public float turnRate = 360f;
+    public float dodgeTurnRate = 360f;
+    public float turnRate = 720f;
     public float attackDuration = 0.27f;
 
-    const float oneFrame = 1f / 60f;
+    public const float oneFrame = 1f / 60f;
 
     public enum State
     {
@@ -29,28 +34,49 @@ public class CootsController : Hurtable
     private State nextState;
     private bool restartState = false;
     private float targetYaw;
+    [HideInInspector]
+    public bool heldKatanaStanceForAWhile = false;
+    [HideInInspector]
+    public bool hasKatana;
+    [HideInInspector]
+    public bool hasGun;
 
     //public CharacterController cc;
     public Rigidbody rb;
     public Animator animator;
     public Animator impactAnimator;
+    public Animator fovAnimator;
+    public Animator waterfowlAnimator;
     public Slash slashScript;
     public CameraController camScript;
     public AudioSource audioSource;
+    public KatanaEffects katanaEffects;
 
     public AudioClip attackA;
     public AudioClip attackB;
     public AudioClip dodge;
     public AudioClip[] walkSounds;
+    public AudioClip stanceEnter;
+    public AudioClip stanceExit;
+    public AudioClip parry;
 
     const float attackAVol = 0.8f;
     const float attackBVol = 0.8f;
-    const float dodgeVol = 0.8f;
+    const float dodgeVol = 0.6f;
     const float walkVol = 0.4f;
+    const float stanceEnterVol = 0.8f;
+    const float stanceExitVol = 0.8f;
+    const float parryVol = 0.8f;
 
-    void Start()
+    void Awake()
     {
-        //cc = GetComponent<CharacterController>();
+        if (instance) 
+        {
+            Debug.LogError("there is more than 1 instance of CootsController!");
+        }
+        instance = this;
+
+        parriedAttacks = new List<Attack>();
     }
 
     // ############## per-state vars ##############
@@ -77,11 +103,16 @@ public class CootsController : Hurtable
     [HideInInspector]
     public bool forceEndHurt;
 
+    // katana stance
+    List<Attack> parriedAttacks;
+
     void FixedUpdate()
     {
         nextState = currState; // do this so all you have to do to change state during the update loop is set nextState to something new
 
         Vector3 inputVector = camScript.GetWorldMovementVector(); // this gets used a lot, so coming up with a new thing to name it in every case is kinda silly
+
+        if (currState != State.katanaStance) heldKatanaStanceForAWhile = false; // there's no switch for doing things upon leaving state, so i'll just put this here...
 
         // ############## pick the proper update loop based on the current state ##############
         switch (currState)
@@ -95,6 +126,8 @@ public class CootsController : Hurtable
                     nextState = State.attack;
                 if (Input.GetKey(KeyCode.LeftShift))
                     nextState = State.dodge;
+                if (Input.GetMouseButton(1))
+                    nextState = State.katanaStance;
                 break;
 
             case State.walk:
@@ -111,10 +144,13 @@ public class CootsController : Hurtable
                     else
                         SetTargetYawFromVelocity(vel);
                 }
+
                 if (Input.GetMouseButton(0))
                     nextState = State.attack;
                 if (Input.GetKey(KeyCode.LeftShift))
                     nextState = State.dodge;
+                if (Input.GetMouseButton(1))
+                    nextState = State.katanaStance;
 
                 break;
 
@@ -181,6 +217,30 @@ public class CootsController : Hurtable
                 break;
 
             case State.katanaStance:
+
+                rb.MovePosition(rb.position + inputVector * iaiStanceSpeed * Time.fixedDeltaTime);
+
+                if (camScript.currState == CameraController.State.target)
+                    SetTargetYawFromVelocity(camScript.currentTarget.transform.position - transform.position);
+                else if (inputVector != Vector3.zero)
+                {
+                    //SetTargetYawFromVelocity(inputVector);
+                    targetYaw = Mathf.MoveTowardsAngle(targetYaw, VectorToYaw(inputVector), iaiStanceTurnRate * Time.fixedDeltaTime);
+                }
+
+                if (!Input.GetMouseButton(1))
+                {
+                    if (parriedAttacks.Count > 0)
+                    {
+                        // TODO: counterattack
+                    }
+                    else
+                    {
+                        nextState = State.idle;
+                        animator.CrossFadeInFixedTime("idle", 2 * oneFrame); // since stance is a looping animation w/ no exit time transition back to the idle animation, need to manually transition here
+                        audioSource.PlayOneShot(stanceExit, stanceExitVol);
+                    }
+                }
                 break;
 
             case State.katanaTeleport:
@@ -194,6 +254,13 @@ public class CootsController : Hurtable
         // ############## change state, if necessary ##############
         if (currState != nextState || restartState)
         {
+            // state exit cleanup
+            switch (currState)
+            {
+                // ...
+            }
+
+            // state entry steup
             switch (nextState)
             {
                 case State.idle:
@@ -260,6 +327,15 @@ public class CootsController : Hurtable
                     // all of this takes place in Hurt() instead, since that's the only place that this state is ever entered from
                     break;
 
+                case State.katanaStance:
+                    animator.CrossFadeInFixedTime("katana stance", 2 * oneFrame);
+                    audioSource.PlayOneShot(stanceEnter, stanceEnterVol);
+                    break;
+
+                case State.katanaTeleport:
+                    // like State.hurt, the transition for this state can only happen in Hurt(), not via the player's own input
+                    break;
+
                 default:
                     Debug.LogError("oof");
                     break;
@@ -293,7 +369,28 @@ public class CootsController : Hurtable
 
 	public override void Hurt(Attack attack)
 	{
-        if ( !(currState == State.dodge && invincible) )
+        if (currState == State.katanaStance)
+        {
+            audioSource.PlayOneShot(parry, parryVol);
+            //katanaEffects.Unsheathe();
+
+            parriedAttacks.Add(attack);
+
+            waterfowlAnimator.transform.parent.position = transform.position;
+            waterfowlAnimator.transform.parent.rotation = transform.rotation;
+            waterfowlAnimator.CrossFade("waterfowl", 0);
+
+            Vector3 input = camScript.GetWorldMovementVector();
+            if (input != Vector3.zero)
+            {
+                rb.position += input * iaiTeleportDistance;
+            }
+            else
+            {
+                rb.position -= transform.forward * iaiTeleportDistance;
+            }
+        }
+        else if ( !(currState == State.dodge && invincible) )
         {
             animator.CrossFadeInFixedTime("hurt", oneFrame);
 

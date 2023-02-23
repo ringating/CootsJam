@@ -27,6 +27,8 @@ public class Spider : Hurtable
 
     void FixedUpdate()
     {
+        nextState = currState;
+
         switch (currState)
         {
             case State.idle:
@@ -52,6 +54,8 @@ public class Spider : Hurtable
                     break;
             }
         }
+
+        currState = nextState;
     }
 
     public override void Hurt(Attack attack)
