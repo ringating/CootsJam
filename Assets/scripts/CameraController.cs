@@ -37,14 +37,17 @@ public class CameraController : MonoBehaviour
 
     private const float resolveDistance = 0.25f;
 
-    void Start()
+	private void Awake()
+	{
+        currState = State.free;
+    }
+
+	void Start()
     {
         pitch = freeCamFocalPoint.localRotation.eulerAngles.x;
         yaw = freeCamFocalPoint.localRotation.eulerAngles.y;
 
         Cursor.lockState = CursorLockMode.Locked;
-
-        currState = State.free;
     }
 
     void LateUpdate()
