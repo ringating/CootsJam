@@ -44,6 +44,14 @@ public class CootsController : MonoBehaviour
     float attackTimer = 0;
     bool attackFlipFlop;
 
+    // dodge
+    [HideInInspector]
+    public bool invincible;
+    [HideInInspector]
+    public bool canCancelDodge;
+    [HideInInspector]
+    public bool forceEndDodge;
+
     void FixedUpdate()
     {
         nextState = currState; // do this so all you have to do to change state during the update loop is set nextState to something new
@@ -58,6 +66,8 @@ public class CootsController : MonoBehaviour
                     nextState = State.walk;
                 if (Input.GetMouseButton(0))
                     nextState = State.attack;
+                if (Input.GetKey(KeyCode.LeftShift))
+                    nextState = State.dodge;
                 break;
 
             case State.walk:
@@ -65,7 +75,8 @@ public class CootsController : MonoBehaviour
                 Vector3 vel = camScript.GetWorldMovementVector() * walkSpeed * Time.fixedDeltaTime;
                 rb.MovePosition(rb.position + vel);
 
-                if (camScript.GetWorldMovementVector() == Vector3.zero) nextState = State.idle;
+                if (camScript.GetWorldMovementVector() == Vector3.zero)
+                    nextState = State.idle;
                 else
                 {
                     if (camScript.currState == CameraController.State.target)
@@ -73,7 +84,10 @@ public class CootsController : MonoBehaviour
                     else
                         SetTargetYawFromVelocity(vel);
                 }
-                if (Input.GetMouseButton(0)) nextState = State.attack;
+                if (Input.GetMouseButton(0))
+                    nextState = State.attack;
+                if (Input.GetKey(KeyCode.LeftShift))
+                    nextState = State.dodge;
 
                 break;
 

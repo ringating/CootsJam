@@ -20,20 +20,38 @@ AnimationClip:
       - serializedVersion: 3
         time: 0
         value: {x: -360, y: 0, z: 0}
-        inSlope: {x: 1180.286, y: 0, z: 0}
-        outSlope: {x: 1180.286, y: 0, z: 0}
+        inSlope: {x: 799.75775, y: 0, z: 0}
+        outSlope: {x: 799.75775, y: 0, z: 0}
         tangentMode: 0
         weightedMode: 0
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
-        outWeight: {x: 0.04444444, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.10881591, y: 0.33333334, z: 0.33333334}
       - serializedVersion: 3
         time: 0.6666667
         value: {x: 0, y: 0, z: 0}
-        inSlope: {x: 171.09148, y: 0, z: 0}
-        outSlope: {x: 171.09148, y: 0, z: 0}
+        inSlope: {x: 243.6259, y: 0, z: 0}
+        outSlope: {x: 696.2466, y: 0, z: 0}
         tangentMode: 0
         weightedMode: 0
-        inWeight: {x: 0.054106325, y: 0.33333334, z: 0.33333334}
+        inWeight: {x: 0.12267172, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.13259508, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 0.85
+        value: {x: 38.434296, y: 0, z: 0}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
+        time: 1.0833334
+        value: {x: 0, y: 0, z: 0}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
         outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -106,7 +124,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.6666667
+    m_StopTime: 1.0833334
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -165,20 +183,38 @@ AnimationClip:
       - serializedVersion: 3
         time: 0
         value: -360
-        inSlope: 1180.286
-        outSlope: 1180.286
+        inSlope: 799.75775
+        outSlope: 799.75775
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.04444444
+        outWeight: 0.10881591
       - serializedVersion: 3
         time: 0.6666667
         value: 0
-        inSlope: 171.09148
-        outSlope: 171.09148
+        inSlope: 243.6259
+        outSlope: 696.2466
+        tangentMode: 1
+        weightedMode: 0
+        inWeight: 0.12267172
+        outWeight: 0.13259508
+      - serializedVersion: 3
+        time: 0.85
+        value: 38.434296
+        inSlope: 0
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.054106325
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1.0833334
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
         outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -190,4 +226,25 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 1
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.5
+    functionName: EndInvincibility
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.6666667
+    functionName: MakeCancellable
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 1.0833334
+    functionName: EndDodgeState
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
