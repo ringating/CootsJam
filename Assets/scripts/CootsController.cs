@@ -15,6 +15,7 @@ public class CootsController : MonoBehaviour
         idle,
         walk,
         attack,
+        dodge,
     }
 
     [HideInInspector]
@@ -87,6 +88,9 @@ public class CootsController : MonoBehaviour
                 attackTimer += Time.deltaTime;
                 break;
 
+            case State.dodge:
+                break;
+
             default:
                 Debug.LogError("bad");
                 break;
@@ -123,6 +127,9 @@ public class CootsController : MonoBehaviour
                         rb.rotation = Quaternion.Euler(0, targetYaw, 0); // snap
                     }
 
+                    break;
+
+                case State.dodge:
                     break;
 
                 default:
