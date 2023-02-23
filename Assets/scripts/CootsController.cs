@@ -58,6 +58,8 @@ public class CootsController : MonoBehaviour
     {
         nextState = currState; // do this so all you have to do to change state during the update loop is set nextState to something new
 
+        Vector3 inputVector = camScript.GetWorldMovementVector(); // this gets used a lot, so coming up with a new thing to name it in every case is kinda silly
+
         // ############## pick the proper update loop based on the current state ##############
         switch (currState)
         {
@@ -74,10 +76,10 @@ public class CootsController : MonoBehaviour
 
             case State.walk:
 
-                Vector3 vel = camScript.GetWorldMovementVector() * walkSpeed * Time.fixedDeltaTime;
+                Vector3 vel = inputVector * walkSpeed * Time.fixedDeltaTime;
                 rb.MovePosition(rb.position + vel);
 
-                if (camScript.GetWorldMovementVector() == Vector3.zero)
+                if (inputVector == Vector3.zero)
                     nextState = State.idle;
                 else
                 {
@@ -113,7 +115,7 @@ public class CootsController : MonoBehaviour
 
                 if (canCancelDodge)
                 {
-                    if (camScript.GetWorldMovementVector() != Vector3.zero)
+                    if (inputVector != Vector3.zero)
                         nextState = State.walk;
                     if (Input.GetMouseButton(0))
                         nextState = State.attack;
@@ -123,10 +125,9 @@ public class CootsController : MonoBehaviour
                 else
                 {
                     // this is the period of time before the dodge lands on the ground
-                    Vector3 inputVec = camScript.GetWorldMovementVector();
-                    if (inputVec.magnitude > 0)
+                    if (inputVector.magnitude > 0)
                     {
-                        targetYaw = Mathf.MoveTowardsAngle(targetYaw, VectorToYaw(inputVec), dodgeTurnRate * Time.fixedDeltaTime);
+                        targetYaw = Mathf.MoveTowardsAngle(targetYaw, VectorToYaw(inputVector), dodgeTurnRate * Time.fixedDeltaTime);
                     }
                     Vector3 v = YawToVector(targetYaw) * dodgeSpeed * Time.fixedDeltaTime;
                     rb.MovePosition(rb.position + v);
@@ -163,13 +164,17 @@ public class CootsController : MonoBehaviour
                     else animator.CrossFadeInFixedTime("attack left", oneFrame);
                     attackFlipFlop = !attackFlipFlop;
 
-                    // snap to targetYaw
-                    if (camScript.currState != CameraController.State.target) 
-                    { 
-                        Vector3 moveVec = camScript.GetWorldMovementVector();
-                        if (moveVec != Vector3.zero) SetTargetYawFromVelocity(moveVec);
-                        rb.rotation = Quaternion.Euler(0, targetYaw, 0);
+                    // when not targeting, snap to input dir (if there is one). when targeting, snap to target.
+                    if (camScript.currState != CameraController.State.target)
+                    {
+                        if (inputVector != Vector3.zero)
+                            SetTargetYawFromVelocity(inputVector);
                     }
+                    else
+                    {
+                        SetTargetYawFromVelocity(camScript.currentTarget.transform.position - transform.position);
+                    }
+                    rb.rotation = Quaternion.Euler(0, targetYaw, 0); // snap to targetYaw
 
                     break;
 
@@ -180,11 +185,10 @@ public class CootsController : MonoBehaviour
                     canCancelDodge = false;
                     invincible = true;
 
-                    // snap to targetYaw
-                    if (camScript.currState != CameraController.State.target)
+                    // if there's input, snap to that direction
+                    if (inputVector != Vector3.zero)
                     {
-                        Vector3 moveVec = camScript.GetWorldMovementVector();
-                        if (moveVec != Vector3.zero) SetTargetYawFromVelocity(moveVec);
+                        SetTargetYawFromVelocity(inputVector);
                         rb.rotation = Quaternion.Euler(0, targetYaw, 0);
                     }
 

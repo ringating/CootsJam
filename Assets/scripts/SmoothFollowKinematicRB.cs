@@ -5,6 +5,9 @@ public class SmoothFollowKinematicRB : MonoBehaviour
     public float lerpAlpha = 0.1f;
     public Transform target;
 
+	public bool followPos = true;
+	public bool followRot = false;
+
 	Rigidbody rb;
 
 	private void Start()
@@ -14,11 +17,19 @@ public class SmoothFollowKinematicRB : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		rb.MovePosition(Vector3.Lerp(rb.position, target.position, lerpAlpha));
+		if(followPos)
+			rb.MovePosition(Vector3.Lerp(rb.position, target.position, lerpAlpha));
+
+		if (followRot)
+			rb.MoveRotation(Quaternion.Slerp(rb.rotation, target.rotation, lerpAlpha));
 	}
 
 	public void SnapToTarget()
 	{
-		rb.position = target.position;
+		if (followPos)
+			rb.position = target.position;
+
+		if (followRot)
+			rb.rotation = target.rotation;
 	}
 }
