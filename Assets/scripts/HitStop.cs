@@ -37,4 +37,10 @@ public class HitStop : MonoBehaviour
     {
         timer = duration;
     }
+
+    public void CancelHitStop()
+    {
+        timer = 0;
+        Time.timeScale = 1;
+    }
 }

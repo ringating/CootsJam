@@ -233,6 +233,10 @@ public class CootsController : Hurtable
                     if (parriedAttacks.Count > 0)
                     {
                         // TODO: counterattack
+
+                        nextState = State.idle;
+                        katanaEffects.Sheathe();
+                        animator.CrossFadeInFixedTime("idle", 2 * oneFrame); // same reasoning as below (but this might be temporary, if there's a new behavior for counterattack at some point)
                     }
                     else
                     {
@@ -369,10 +373,11 @@ public class CootsController : Hurtable
 
 	public override void Hurt(Attack attack)
 	{
-        if (currState == State.katanaStance)
+        if (currState == State.katanaStance && attack.type == Attack.Type.melee)
         {
             audioSource.PlayOneShot(parry, parryVol);
-            //katanaEffects.Unsheathe();
+            katanaEffects.Unsheathe();
+            HitStop.instance.CancelHitStop();
 
             parriedAttacks.Add(attack);
 
