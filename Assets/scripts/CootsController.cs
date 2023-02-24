@@ -26,7 +26,8 @@ public class CootsController : Hurtable
         dodge,
         hurt,
         katanaStance,
-        katanaTeleport,
+        //katanaTeleport,
+        falling
     }
 
     [HideInInspector]
@@ -59,6 +60,7 @@ public class CootsController : Hurtable
     public AudioClip stanceEnter;
     public AudioClip stanceExit;
     public AudioClip parry;
+    public AudioClip fall;
 
     const float attackAVol = 0.8f;
     const float attackBVol = 0.8f;
@@ -67,6 +69,7 @@ public class CootsController : Hurtable
     const float stanceEnterVol = 0.8f;
     const float stanceExitVol = 0.8f;
     const float parryVol = 0.8f;
+    const float fallVol = 0.8f;
 
     void Awake()
     {
@@ -248,8 +251,11 @@ public class CootsController : Hurtable
                 }
                 break;
 
-            case State.katanaTeleport:
+
+            case State.falling:
+                // tbh i think this'll be handled entirely by an animation
                 break;
+
 
             default:
                 Debug.LogError("bad");
@@ -262,7 +268,8 @@ public class CootsController : Hurtable
             // state exit cleanup
             switch (currState)
             {
-                // ...
+                default:
+                    break;
             }
 
             // state entry steup
@@ -337,8 +344,8 @@ public class CootsController : Hurtable
                     audioSource.PlayOneShot(stanceEnter, stanceEnterVol);
                     break;
 
-                case State.katanaTeleport:
-                    // like State.hurt, the transition for this state can only happen in Hurt(), not via the player's own input
+                case State.falling:
+                    // all handled by the animation
                     break;
 
                 default:
@@ -396,7 +403,7 @@ public class CootsController : Hurtable
                 rb.position -= transform.forward * iaiTeleportDistance;
             }
         }
-        else if ( !(currState == State.dodge && invincible) )
+        else if ( (!(currState == State.dodge && invincible)) && (!(currState == State.falling)) )
         {
             animator.CrossFadeInFixedTime("hurt", oneFrame);
 
@@ -417,5 +424,21 @@ public class CootsController : Hurtable
     {
         int i = Random.Range(0, walkSounds.Length);
         audioSource.PlayOneShot(walkSounds[i], walkVol);
+    }
+
+    public void Fall()
+    {
+        audioSource.PlayOneShot(fall, fallVol);
+        animator.CrossFade("fall", 0);
+        currState = State.falling;
+    }
+
+    public Vector3 fallRespawnPoint;
+
+    public void RespawnFromFall()
+    {
+        currState = State.idle;
+
+        rb.position = new Vector3(fallRespawnPoint.x, 0, fallRespawnPoint.z); // just assumes the player is always at y=0, but change this if that ever becomes not always true
     }
 }

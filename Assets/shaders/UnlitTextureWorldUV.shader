@@ -1,5 +1,5 @@
 // shader by u/ExplosiveJames on reddit https://www.reddit.com/r/Unity3D/comments/awth13/comment/ehp7nth/
-Shader "Custom/WorldOffsetShader"
+Shader "Custom/UnlitTextureWorldUV"
 {
 	Properties
 	{

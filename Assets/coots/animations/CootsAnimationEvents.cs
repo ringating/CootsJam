@@ -7,8 +7,8 @@ public class CootsAnimationEvents : MonoBehaviour
         CootsController.instance.heldKatanaStanceForAWhile = true;
     }
 
-    public void KatanaTeleport()
+    public void RespawnFromFall()
     {
-        // ...
+        CootsController.instance.RespawnFromFall();
     }
 }

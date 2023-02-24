@@ -4,11 +4,25 @@ using UnityEngine;
 
 public class Spider : Hurtable
 {
+    public GameObject topHat;
+    public GameObject monocle;
+    public GameObject eyepatch;
+    public GameObject sword;
+    public GameObject musket;
+
     public enum State 
     {
         idle,
         swordAttack
     }
+
+    public enum Type 
+    {
+        sword,
+        musket
+    }
+
+    public Type type;
 
     public Animator animator;
     public ShakeX shake;
@@ -20,7 +34,31 @@ public class Spider : Hurtable
     
     void Start()
     {
-        
+        switch (type)
+        {
+            case Type.sword:
+
+                eyepatch.SetActive(true);
+                sword.SetActive(true);
+
+                topHat.SetActive(false);
+                monocle.SetActive(false);
+                musket.SetActive(false);
+
+                break;
+
+
+            case Type.musket:
+
+                eyepatch.SetActive(false);
+                sword.SetActive(false);
+
+                topHat.SetActive(true);
+                monocle.SetActive(true);
+                musket.SetActive(true);
+
+                break;
+        }
     }
 
     float targetYaw;
