@@ -368,13 +368,13 @@ public class CootsController : Hurtable
         targetYaw = Vector3.SignedAngle(Vector3.forward, velocity, Vector3.up);
     }
 
-    public float VectorToYaw(Vector3 v)
+    public static float VectorToYaw(Vector3 v)
     {
         v = new Vector3(v.x, 0, v.z);
         return Vector3.SignedAngle(Vector3.forward, v, Vector3.up);
     }
 
-    public Vector3 YawToVector(float y)
+    public static Vector3 YawToVector(float y)
     {
         return Quaternion.Euler(0, y, 0) * Vector3.forward;
     }
