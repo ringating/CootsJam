@@ -232,7 +232,8 @@ public class CootsController : Hurtable
                 {
                     if (parriedAttacks.Count > 0)
                     {
-                        // TODO: counterattack
+                        // TODO: counterattack?
+                        parriedAttacks.Clear();
 
                         nextState = State.idle;
                         katanaEffects.Sheathe();
