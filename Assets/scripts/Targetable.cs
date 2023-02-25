@@ -2,5 +2,6 @@ using UnityEngine;
 
 public class Targetable : MonoBehaviour
 {
-    public bool vulnerableToGun;
+    [HideInInspector]
+    public bool vulnerableToGun = false;
 }

@@ -219,6 +219,8 @@ public class Spider : Hurtable
         );
 
         audioSource.PlayOneShot(musketShot, musketShotVol);
+
+        targetable.vulnerableToGun = false;
     }
 
     public void FaceCoots()

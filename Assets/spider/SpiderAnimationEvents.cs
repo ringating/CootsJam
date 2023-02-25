@@ -46,4 +46,9 @@ public class SpiderAnimationEvents : MonoBehaviour
         musketAttack.active = false;
         musketAttack.ClearHitList();
     }
+
+    public void SetVulnerableToGun()
+    {
+        spider.targetable.vulnerableToGun = true;
+    }
 }

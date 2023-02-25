@@ -244,7 +244,7 @@ public class CameraController : MonoBehaviour
         return coots.transform.position + behindAndAboveCoots;
     }
 
-    public bool PositionIsOnScreen(Vector3 worldPosition)
+    public static bool PositionIsOnScreen(Vector3 worldPosition)
     {
         Vector2 viewportPos = Camera.main.ScreenToViewportPoint(Camera.main.WorldToScreenPoint(worldPosition));
         bool inViewPort =

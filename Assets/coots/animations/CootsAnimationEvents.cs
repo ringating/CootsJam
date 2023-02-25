@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CootsAnimationEvents : MonoBehaviour
@@ -14,7 +15,18 @@ public class CootsAnimationEvents : MonoBehaviour
 
     public void TryShot()
     {
+        Targetable[] targets = FindObjectsOfType<Targetable>();
+        List<Targetable> onScreenVulnerableTargets = new List<Targetable>();
+        foreach (Targetable t in targets)
+        {
+            if (t.vulnerableToGun && CameraController.PositionIsOnScreen(t.transform.position))
+                onScreenVulnerableTargets.Add(t);
+        }
 
+        if (onScreenVulnerableTargets.Count > 0)
+        {
+            
+        }
     }
 
     public void ReturnToIdleState()
