@@ -27,7 +27,8 @@ public class CootsController : Hurtable
         hurt,
         katanaStance,
         //katanaTeleport,
-        falling
+        falling,
+        gun,
     }
 
     [HideInInspector]
@@ -61,6 +62,7 @@ public class CootsController : Hurtable
     public AudioClip stanceExit;
     public AudioClip parry;
     public AudioClip fall;
+    public AudioClip gunshot;
 
     const float attackAVol = 0.8f;
     const float attackBVol = 0.8f;
@@ -70,6 +72,7 @@ public class CootsController : Hurtable
     const float stanceExitVol = 0.8f;
     const float parryVol = 0.8f;
     const float fallVol = 0.8f;
+    const float gunshotVol = 0.8f;
 
     void Awake()
     {
@@ -131,6 +134,8 @@ public class CootsController : Hurtable
                     nextState = State.dodge;
                 if (Input.GetMouseButton(1))
                     nextState = State.katanaStance;
+                if (Input.GetKey(KeyCode.E))
+                    nextState = State.gun;
                 break;
 
             case State.walk:
@@ -154,6 +159,8 @@ public class CootsController : Hurtable
                     nextState = State.dodge;
                 if (Input.GetMouseButton(1))
                     nextState = State.katanaStance;
+                if (Input.GetKey(KeyCode.E))
+                    nextState = State.gun;
 
                 break;
 
@@ -236,11 +243,13 @@ public class CootsController : Hurtable
                     if (parriedAttacks.Count > 0)
                     {
                         // TODO: counterattack?
+
                         parriedAttacks.Clear();
+                        katanaEffects.Sheathe();
 
                         nextState = State.idle;
-                        katanaEffects.Sheathe();
                         animator.CrossFadeInFixedTime("idle", 2 * oneFrame); // same reasoning as below (but this might be temporary, if there's a new behavior for counterattack at some point)
+                        audioSource.PlayOneShot(stanceExit, stanceExitVol);
                     }
                     else
                     {
@@ -254,6 +263,9 @@ public class CootsController : Hurtable
 
             case State.falling:
                 // tbh i think this'll be handled entirely by an animation
+                break;
+
+            case State.gun:
                 break;
 
 
@@ -346,6 +358,11 @@ public class CootsController : Hurtable
 
                 case State.falling:
                     // all handled by the animation
+                    break;
+
+                case State.gun:
+                    animator.CrossFadeInFixedTime("gunshot", oneFrame);
+                    audioSource.PlayOneShot(gunshot, gunshotVol);
                     break;
 
                 default:

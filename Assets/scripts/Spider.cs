@@ -9,10 +9,9 @@ public class Spider : Hurtable
     public GameObject eyepatch;
     public GameObject sword;
     public GameObject musket;
-
     public Rigidbody rb;
-
     public Transform shotAnchor;
+    public Targetable targetable;
 
     public float aggroRange;
     public float attackRange = 4f;

@@ -11,4 +11,14 @@ public class CootsAnimationEvents : MonoBehaviour
     {
         CootsController.instance.RespawnFromFall();
     }
+
+    public void TryShot()
+    {
+
+    }
+
+    public void ReturnToIdleState()
+    {
+        CootsController.instance.currState = CootsController.State.idle;
+    }
 }
