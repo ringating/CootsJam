@@ -37,9 +37,7 @@ public class HandAnimationStuff : MonoBehaviour
 
 	public void ChangeSprite(HandSprite to)
 	{
-		idle.enabled = false;
-		chop.enabled = false;
-		gun.enabled = false;
+		HideAllMeshRenderers();
 
 		switch (to)
 		{
@@ -55,6 +53,19 @@ public class HandAnimationStuff : MonoBehaviour
 				gun.enabled = true;
 				break;
 		}
+	}
+
+	public void HideAllMeshRenderers()
+	{
+		idle.enabled = false;
+		chop.enabled = false;
+		gun.enabled = false;
+	}
+
+	public void Hide()
+	{
+		HideAllMeshRenderers();
+		animator.CrossFade("hidden", 0);
 	}
 
 	public PlayShockwave shockwaveScript;
