@@ -7,6 +7,7 @@ public class CameraController : MonoBehaviour
     public float targetCamDistanceBehindCoots = 3f;
     public float targetCamDistanceAboveCoots = 3f;
     public float targetTransitionDuration = 0.25f;
+    public float targetLockoutTime = 0.5f;
 
     public AudioClip targetOn;
     public AudioClip targetOff;
@@ -56,6 +57,8 @@ public class CameraController : MonoBehaviour
         yaw = freeCamFocalPoint.localRotation.eulerAngles.y;
 
         Cursor.lockState = CursorLockMode.Locked;
+
+        pastTargets = new List<TargetAndTime>();
     }
 
     void LateUpdate()
@@ -117,6 +120,11 @@ public class CameraController : MonoBehaviour
                     prevRotation = cam.rotation;
 
                     audioSource.PlayOneShot(targetOff, targetOffVol);
+
+                    TargetAndTime asdf = new TargetAndTime();
+                    asdf.targetable = currentTarget;
+                    asdf.timeTargeted = Time.time;
+                    pastTargets.Add(asdf);
                 }
 
                 break;
@@ -146,9 +154,31 @@ public class CameraController : MonoBehaviour
 		transitionTimer += Time.deltaTime;
     }
 
+    struct TargetAndTime 
+    {
+        public Targetable targetable;
+        public float timeTargeted;
+    }
+    List<TargetAndTime> pastTargets;
+
     private void GetNewTarget() 
     {
+        List<Targetable> targetedTooRecently = new List<Targetable>();
+        List<TargetAndTime> toRemove = new List<TargetAndTime>();
+        foreach (TargetAndTime tat in pastTargets)
+        {
+            if (Time.time - tat.timeTargeted < targetLockoutTime)
+                targetedTooRecently.Add(tat.targetable);
+            else
+                toRemove.Add(tat);
+        }
+
+        foreach (TargetAndTime tat in toRemove)
+            pastTargets.Remove(tat);
+
         Targetable[] targets = FindObjectsOfType<Targetable>();
+
+        //print(targets.Length);
 
         Targetable closest = null;
         float closestDistance = 100;
@@ -157,12 +187,17 @@ public class CameraController : MonoBehaviour
             if (t.enabled && PositionIsOnScreen(t.transform.position)) // can just disable Targeable scripts to make an object no longer be considered for targeting
             {
                 float distance = Vector3.Distance(coots.transform.position, t.transform.position);
-                if(distance < closestDistance)
+                if(distance < closestDistance && !targetedTooRecently.Contains(t))
 				{
                     closest = t;
-				}
+                    closestDistance = distance;
+                }
+
+                //print($"{t.tag} distance: {distance}");
             }
         }
+
+        //print($"closest: {(closest ? closest.tag : "null")}");
 
         if (closest)
         {
