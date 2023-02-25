@@ -22,11 +22,26 @@ public class Attack : MonoBehaviour
 	public bool active = false;
 
 	private List<Hurtable> hitList;
+	private float timer;
 
 	private void Start()
 	{
 		hitList = new List<Hurtable>();
 		active = false; // just for safety
+		timer = 0;
+	}
+
+	private void FixedUpdate()
+	{
+		if (timer > 0)
+		{
+			timer -= Time.fixedDeltaTime;
+			if (timer <= 0)
+			{
+				active = false;
+				ClearHitList();
+			}
+		}
 	}
 
 	private void OnTriggerStay(Collider other)
@@ -46,5 +61,11 @@ public class Attack : MonoBehaviour
 	public void ClearHitList()
 	{
 		hitList.Clear();
+	}
+
+	public void ActivateWithLifetime(float lifetime)
+	{
+		active = true;
+		timer = lifetime;
 	}
 }

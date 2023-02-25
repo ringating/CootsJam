@@ -60,6 +60,8 @@ public class Spider : Hurtable
     {
         spawnPos = transform.position;
 
+        targetable.OnInterrupted += InterruptMusket;
+
         switch (type)
         {
             case Type.sword:
@@ -226,5 +228,12 @@ public class Spider : Hurtable
     public void FaceCoots()
     {
         transform.rotation = Quaternion.Euler(0, CootsController.VectorToYaw(rb.position - CootsController.instance.rb.position), 0);
+    }
+
+    public void InterruptMusket()
+    {
+        currState = State.idle;
+        targetable.vulnerableToGun = false;
+        animator.CrossFade("spin", 0);
     }
 }

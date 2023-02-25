@@ -39,6 +39,7 @@ public class SpiderAnimationEvents : MonoBehaviour
         musketAttack.transform.rotation = Quaternion.Euler(0, CootsController.VectorToYaw(CootsController.instance.transform.position - spider.transform.position), 0);
         musketAttack.transform.position = CootsController.instance.transform.position;
         spider.FireMusket();
+        spider.targetable.vulnerableToGun = false;
     }
 
     public void DeactivateShotAttack()

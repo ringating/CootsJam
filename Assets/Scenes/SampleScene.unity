@@ -1572,7 +1572,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1aa193a7f42240b4aa17268caa56c5d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vulnerableToGun: 0
 --- !u!4 &465938802
 Transform:
   m_ObjectHideFlags: 0
@@ -4880,6 +4879,7 @@ MonoBehaviour:
   turnRate: 720
   attackDuration: 0.27
   currState: 0
+  targetYaw: 0
   heldKatanaStanceForAWhile: 0
   hasKatana: 0
   hasGun: 0
@@ -4892,6 +4892,7 @@ MonoBehaviour:
   camScript: {fileID: 1259446418}
   audioSource: {fileID: 1441623416}
   katanaEffects: {fileID: 386247020}
+  gunAttack: {fileID: 2057633686}
   attackA: {fileID: 8300000, guid: f7416eecd1fedf84493358a2b6a55701, type: 3}
   attackB: {fileID: 8300000, guid: a6805c10b28f2e944864140c1565f4e5, type: 3}
   dodge: {fileID: 8300000, guid: 180f34b44aed1e74bac77dfe1eccbba6, type: 3}
@@ -4903,7 +4904,7 @@ MonoBehaviour:
   stanceExit: {fileID: 8300000, guid: f0503540b482bd741975ab560303f4b1, type: 3}
   parry: {fileID: 8300000, guid: ff7bc6338e9030745b398e58b25fcda4, type: 3}
   fall: {fileID: 8300000, guid: ccdf6c7f3dc91a94a861af450479bbdf, type: 3}
-  gunshot: {fileID: 0}
+  gunshot: {fileID: 8300000, guid: 898301b3048883f48aa21de7532c7dcb, type: 3}
   invincible: 0
   canCancelDodge: 0
   forceEndDodge: 0
@@ -6514,7 +6515,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!54 &1918682470
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6804,6 +6805,91 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toClear: {fileID: 896701862}
+--- !u!1 &2057633685
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2057633689}
+  - component: {fileID: 2057633688}
+  - component: {fileID: 2057633687}
+  - component: {fileID: 2057633686}
+  m_Layer: 6
+  m_Name: coots gun attack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2057633686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057633685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 437895e77e5e7ec4abc67a134c7cdd29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
+  attackOwner: {fileID: 0}
+  hitstopDuration: 0.25
+  hitShakeDuration: 1
+  camShakeDuration: 0.2
+  camShakeFrequency: 10
+  camShakeMagnitude: 5
+  toPlayOnHit: {fileID: 8300000, guid: ee1ecc6a5552fcf4cb8886182b0c3101, type: 3}
+  toPlayOnHitVolume: 0.8
+  active: 0
+--- !u!54 &2057633687
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057633685}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!135 &2057633688
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057633685}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &2057633689
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057633685}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.95, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 16
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2078086371
 GameObject:
   m_ObjectHideFlags: 0
@@ -6821,7 +6907,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2078086372
 Transform:
   m_ObjectHideFlags: 0

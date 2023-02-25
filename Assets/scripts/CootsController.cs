@@ -35,7 +35,8 @@ public class CootsController : Hurtable
     public State currState;
     private State nextState;
     private bool restartState = false;
-    private float targetYaw;
+    [HideInInspector]
+    public float targetYaw;
     [HideInInspector]
     public bool heldKatanaStanceForAWhile = false;
     [HideInInspector]
@@ -53,6 +54,7 @@ public class CootsController : Hurtable
     public CameraController camScript;
     public AudioSource audioSource;
     public KatanaEffects katanaEffects;
+    public Attack gunAttack;
 
     public AudioClip attackA;
     public AudioClip attackB;
@@ -72,7 +74,7 @@ public class CootsController : Hurtable
     const float stanceExitVol = 0.8f;
     const float parryVol = 0.8f;
     const float fallVol = 0.8f;
-    const float gunshotVol = 0.8f;
+    public const float gunshotVol = 0.6f;
 
     void Awake()
     {
@@ -362,7 +364,7 @@ public class CootsController : Hurtable
 
                 case State.gun:
                     animator.CrossFadeInFixedTime("gunshot", oneFrame);
-                    audioSource.PlayOneShot(gunshot, gunshotVol);
+                    //audioSource.PlayOneShot(gunshot, gunshotVol);
                     break;
 
                 default:

@@ -25,7 +25,17 @@ public class CootsAnimationEvents : MonoBehaviour
 
         if (onScreenVulnerableTargets.Count > 0)
         {
-            
+            // idk just shoot an arbitrary one, that's easiest for now
+            CootsController.instance.gunAttack.transform.position = onScreenVulnerableTargets[0].transform.position;
+            CootsController.instance.gunAttack.ActivateWithLifetime(3 * CootsController.oneFrame);
+            float yaw = CootsController.VectorToYaw(onScreenVulnerableTargets[0].transform.position - CootsController.instance.transform.position);
+            CootsController.instance.targetYaw = yaw;
+            CootsController.instance.transform.rotation = Quaternion.Euler(0, yaw, 0);
+            CootsController.instance.audioSource.PlayOneShot(CootsController.instance.gunshot, CootsController.gunshotVol);
+
+            onScreenVulnerableTargets[0].InterruptRangedAttack();
+
+            //print("bang");
         }
     }
 
