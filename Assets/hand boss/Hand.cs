@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Hand : MonoBehaviour
+public class Hand : Hurtable
 {
     public Rigidbody rb;
 
@@ -74,5 +74,15 @@ public class Hand : MonoBehaviour
         }
 
         timer += Time.fixedDeltaTime;
+	}
+
+	private void OnDrawGizmos()
+	{
+        Gizmos.DrawSphere(transform.position, 0.125f);
+	}
+
+	public override void Hurt(Attack attack)
+	{
+		throw new System.NotImplementedException();
 	}
 }

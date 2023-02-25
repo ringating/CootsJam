@@ -34,7 +34,7 @@ public class CootsHP : MonoBehaviour
 
     public void UpdateHP()
     {
-        hpParent.localScale = new Vector3(hp / powerLevelHP[CootsController.instance.powerLevel], 1, 1);
+        hpParent.localScale = new Vector3(Mathf.Max(0, hp / powerLevelHP[CootsController.instance.powerLevel]), 1, 1);
     }
 
     public void DealDamage(float damage)

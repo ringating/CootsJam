@@ -10,6 +10,13 @@ public class HandAnimationStuff : MonoBehaviour
 	public MeshRenderer chop;
 	public MeshRenderer gun;
 
+	public AudioSource audioSource;
+	public AudioClip fingerGunSound;
+	public AudioClip alertSound;
+
+	const float fingerGunSoundVol = 0.8f;
+	const float alertSoundVol = 0.8f;
+
 	public void StopMoving()
 	{
 		hand.MoveToFixedPosition(hand.rb.position, 0);
@@ -45,5 +52,29 @@ public class HandAnimationStuff : MonoBehaviour
 				gun.enabled = true;
 				break;
 		}
+	}
+
+	public PlayShockwave shockwaveScript;
+	public Attack fingerGunAttack;
+	public void PlayGunShockwave() // aka Shoot()
+	{
+		shockwaveScript.Play();
+		audioSource.PlayOneShot(fingerGunSound, fingerGunSoundVol);
+
+		fingerGunAttack.transform.position = CootsController.instance.transform.position;
+		fingerGunAttack.transform.rotation = Quaternion.Euler(0, CootsController.VectorToYaw(CootsController.instance.transform.position - shockwaveScript.transform.position), 0);
+		fingerGunAttack.ActivateWithLifetime(CootsController.oneFrame * 2);
+	}
+
+	public void EndGunShockwave() 
+	{
+		shockwaveScript.ForceEnd();
+	}
+
+	public GlintPlayer glintScript;
+	public void PlayGunGlint()
+	{
+		glintScript.Play();
+		audioSource.PlayOneShot(alertSound, alertSoundVol);
 	}
 }
