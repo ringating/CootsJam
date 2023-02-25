@@ -726,6 +726,8 @@ MonoBehaviour:
   rb: {fileID: 140094878}
   shake: {fileID: 1216908375}
   audioSource: {fileID: 140094881}
+  animEventsScript: {fileID: 1079966469}
+  bossVersion: 2
   currMovementStyle: 0
   lerpLikeCurve:
     m_Mode: 1
@@ -4673,6 +4675,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f877345b9d1a68429be2a672819ab88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turnRate: 0
   hand: {fileID: 140094879}
   idle: {fileID: 316685848}
   chop: {fileID: 86940545}
@@ -5341,6 +5344,7 @@ GameObject:
   - component: {fileID: 1259446419}
   - component: {fileID: 1259446420}
   - component: {fileID: 1259446421}
+  - component: {fileID: 1259446422}
   m_Layer: 0
   m_Name: scripts
   m_TagString: Untagged
@@ -5416,6 +5420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94a3adf3cd83750428cf72639d813fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  paused: 0
 --- !u!114 &1259446420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5448,6 +5453,18 @@ MonoBehaviour:
   - 200
   hpBarParent: {fileID: 1868745935}
   hpParent: {fileID: 343737036}
+--- !u!114 &1259446422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1259446415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b8ffe59f4710ee49b537ae63ed86ec1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1278802576
 GameObject:
   m_ObjectHideFlags: 0

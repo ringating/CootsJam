@@ -5,6 +5,16 @@ public class Hand : Hurtable
     public Rigidbody rb;
     public ShakeX shake;
     public AudioSource audioSource;
+    public HandAnimationStuff animEventsScript;
+
+    public enum BossVersion 
+    {
+        melee,
+        ranged,
+        final
+    }
+
+    public BossVersion bossVersion;
 
     public enum MovementStyle 
     {
@@ -54,6 +64,9 @@ public class Hand : Hurtable
 
     private void FixedUpdate()
 	{
+        float targetYaw = CootsController.VectorToYaw(CootsController.instance.transform.position - transform.position);
+        rb.MoveRotation(Quaternion.Euler(0, Mathf.MoveTowardsAngle(transform.rotation.eulerAngles.y, targetYaw, animEventsScript.turnRate * Time.fixedDeltaTime), 0));
+
         switch (currMovementStyle) 
         {
             case MovementStyle.relative:

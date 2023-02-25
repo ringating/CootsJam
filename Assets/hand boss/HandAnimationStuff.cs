@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class HandAnimationStuff : MonoBehaviour
 {
+	[HideInInspector]
+	public float turnRate = 0;
+	
 	public Hand hand;
 
 	public MeshRenderer idle;
@@ -98,5 +101,32 @@ public class HandAnimationStuff : MonoBehaviour
 	public void ActivateChopAttack()
 	{
 		chopAttack.ActivateWithLifetime(CootsController.oneFrame * 2);
+	}
+
+	public void MaybePickAnAttack() // 50/50 to do an attack, use this to make the hand sometimes idle for less time
+	{
+		if (Random.Range(0, 2) > 0)
+			PickAnAttack();
+	}
+
+	public void PickAnAttack()
+	{
+		switch (hand.bossVersion) 
+		{
+			case Hand.BossVersion.melee:
+				animator.CrossFade("chop flurry", 0);
+				break;
+
+			case Hand.BossVersion.ranged:
+				animator.CrossFade("gun flurry", 0);
+				break;
+
+			case Hand.BossVersion.final:
+				if(Random.Range(0,2) > 0)
+					animator.CrossFade("chop flurry", 0);
+				else
+					animator.CrossFade("gun flurry", 0);
+				break;
+		}
 	}
 }

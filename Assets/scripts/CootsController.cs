@@ -104,6 +104,7 @@ public class CootsController : Hurtable
     public bool canCancelDodge;
     [HideInInspector]
     public bool forceEndDodge;
+    private bool dodgeFlipFlop;
 
     // hurt
     [HideInInspector]
@@ -335,7 +336,8 @@ public class CootsController : Hurtable
 
                 case State.dodge:
 
-                    animator.CrossFade("dodge", 0);
+                    animator.CrossFade(dodgeFlipFlop ? "dodge A" : "dodge B", 0);
+                    dodgeFlipFlop = !dodgeFlipFlop;
                     forceEndDodge = false;
                     canCancelDodge = false;
                     invincible = true;
@@ -400,6 +402,7 @@ public class CootsController : Hurtable
         return Quaternion.Euler(0, y, 0) * Vector3.forward;
     }
 
+    bool katanaStanceFlipFlop;
 	public override void Hurt(Attack attack)
 	{
         if (currState == State.katanaStance && attack.type == Attack.Type.melee)
@@ -412,7 +415,8 @@ public class CootsController : Hurtable
 
             waterfowlAnimator.transform.parent.position = transform.position;
             waterfowlAnimator.transform.parent.rotation = transform.rotation;
-            waterfowlAnimator.CrossFade("waterfowl", 0);
+            waterfowlAnimator.CrossFade(katanaStanceFlipFlop ? "waterfowl A" : "waterfowl B", 0);
+            katanaStanceFlipFlop = !katanaStanceFlipFlop;
 
             Vector3 input = camScript.GetWorldMovementVector();
             if (input != Vector3.zero)
@@ -454,6 +458,7 @@ public class CootsController : Hurtable
         audioSource.PlayOneShot(fall, fallVol);
         animator.CrossFade("fall", 0);
         currState = State.falling;
+        CootsHP.instance.DealDamage(10f);
     }
 
     public Vector3 fallRespawnPoint;

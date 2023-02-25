@@ -10,6 +10,9 @@ public class HitStop : MonoBehaviour
 
     public bool stopped { get { return Time.timeScale != 1; } }
 
+    [HideInInspector]
+    public bool paused;
+
 	private void Awake()
 	{
 		if (instance)
@@ -22,14 +25,21 @@ public class HitStop : MonoBehaviour
 
 	void Update()
     {
-        if (timer > 0)
+        if (paused)
         {
-            Time.timeScale = 0.1f;
-            timer -= Time.unscaledDeltaTime;
+            Time.timeScale = 0;
         }
-        else
+        else 
         {
-            Time.timeScale = 1;
+            if (timer > 0)
+            {
+                Time.timeScale = 0.1f;
+                timer -= Time.unscaledDeltaTime;
+            }
+            else
+            {
+                Time.timeScale = 1;
+            }
         }
     }
 
