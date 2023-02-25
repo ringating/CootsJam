@@ -44,6 +44,8 @@ public class CootsController : Hurtable
     [HideInInspector]
     public bool hasGun;
 
+    public int powerLevel {get{ return (hasGun ? 1 : 0) + (hasKatana ? 1 : 0); }}
+
     //public CharacterController cc;
     public Rigidbody rb;
     public Animator animator;
@@ -436,6 +438,8 @@ public class CootsController : Hurtable
             stopHurtMovement = false;
             canDodgeOutOfHurt = false;
             forceEndHurt = false;
+
+            CootsHP.instance.DealDamage(attack.damage);
         }
     }
 

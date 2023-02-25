@@ -10,6 +10,7 @@ public class Attack : MonoBehaviour
 	}
 	
 	public Type type;
+	public float damage = 45f;
 	public Hurtable attackOwner;
 	public float hitstopDuration = 0.25f;
 	public float hitShakeDuration = 1f;
