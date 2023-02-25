@@ -28,10 +28,10 @@ public class ShakeX : MonoBehaviour
 		}
 	}
 
-	public Vector3 GetCurrentWorldSpaceDelta()
+	/*public Vector3 GetCurrentWorldSpaceDelta()
 	{
 		return transform.TransformPoint(-transform.localPosition);
-	}
+	}*/
 
 	private float GetDeltaX()
 	{

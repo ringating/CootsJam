@@ -58,6 +58,8 @@ public class HandAnimationStuff : MonoBehaviour
 	public Attack fingerGunAttack;
 	public void PlayGunShockwave() // aka Shoot()
 	{
+		targetable.vulnerableToGun = false;
+
 		shockwaveScript.Play();
 		audioSource.PlayOneShot(fingerGunSound, fingerGunSoundVol);
 
@@ -76,5 +78,25 @@ public class HandAnimationStuff : MonoBehaviour
 	{
 		glintScript.Play();
 		audioSource.PlayOneShot(alertSound, alertSoundVol);
+		targetable.vulnerableToGun = true;
+	}
+
+	public Targetable targetable;
+	private void Start()
+	{
+		targetable.OnInterrupted += InterruptedByCoots;
+	}
+
+	public Animator animator;
+	public void InterruptedByCoots()
+	{
+		animator.CrossFade("interrupted", 0);
+		targetable.vulnerableToGun = false;
+	}
+
+	public Attack chopAttack;
+	public void ActivateChopAttack()
+	{
+		chopAttack.ActivateWithLifetime(CootsController.oneFrame * 2);
 	}
 }
