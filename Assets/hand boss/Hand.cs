@@ -3,6 +3,8 @@ using UnityEngine;
 public class Hand : Hurtable
 {
     public Rigidbody rb;
+    public ShakeX shake;
+    public AudioSource audioSource;
 
     public enum MovementStyle 
     {
@@ -83,6 +85,8 @@ public class Hand : Hurtable
 
 	public override void Hurt(Attack attack)
 	{
-		throw new System.NotImplementedException();
-	}
+        shake.Shake(attack.hitShakeDuration);
+        CameraShake.instance.AddShake(attack.camShakeDuration, attack.camShakeMagnitude, attack.camShakeFrequency);
+        audioSource.PlayOneShot(attack.toPlayOnHit, attack.toPlayOnHitVolume);
+    }
 }

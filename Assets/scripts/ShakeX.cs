@@ -28,6 +28,11 @@ public class ShakeX : MonoBehaviour
 		}
 	}
 
+	public Vector3 GetCurrentWorldSpaceDelta()
+	{
+		return transform.TransformPoint(-transform.localPosition);
+	}
+
 	private float GetDeltaX()
 	{
 		return Mathf.Sqrt(magnitudeScalarOverDuration.Evaluate(timer/duration) * magnitude) * Mathf.Cos(Time.unscaledTime * 2 * Mathf.PI * frequency);
