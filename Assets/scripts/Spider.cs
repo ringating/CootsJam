@@ -13,6 +13,7 @@ public class Spider : Hurtable
     public Transform shotAnchor;
     public Targetable targetable;
 
+    public float maxHP = 100f;
     public float aggroRange;
     public float attackRange = 4f;
     public float attackAngleRange = 90f;
@@ -173,6 +174,11 @@ public class Spider : Hurtable
         shake.Shake(attack.hitShakeDuration);
         CameraShake.instance.AddShake(attack.camShakeDuration, attack.camShakeMagnitude, attack.camShakeFrequency);
         audioSource.PlayOneShot(attack.toPlayOnHit, attack.toPlayOnHitVolume);
+        hp -= attack.damage;
+        if (hp <= 0)
+        {
+
+        }
     }
 
     public void IdleDecision()
@@ -236,4 +242,15 @@ public class Spider : Hurtable
         targetable.vulnerableToGun = false;
         animator.CrossFade("spin", 0);
     }
+
+    float hp;
+	public override float GetHP()
+	{
+		return hp;
+	}
+
+	public override void Heal()
+	{
+        hp = maxHP;
+	}
 }

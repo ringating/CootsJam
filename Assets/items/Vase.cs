@@ -13,6 +13,12 @@ public class Vase : Hurtable
 
 	public AudioSource audioSource;
 
+	public ShakeX shake;
+
+	public Transform firstTutorialThing;
+
+	public HandAnimationStuff handAnimStuff;
+
 	int hp;
 
 	private void Start()
@@ -39,9 +45,24 @@ public class Vase : Hurtable
 			case 0:
 				transform.rotation = Quaternion.Euler(90,0,0);
 				col.enabled = false;
+				firstTutorialThing.transform.position = Vector3.down * 1000f;
+				handAnimStuff.FirstSpawn();
+				Flags.encounteredFirstBoss = true;
 				break;
 		}
 
+		shake.Shake(attack.hitShakeDuration);
 		audioSource.PlayOneShot(attack.toPlayOnHit, attack.toPlayOnHitVolume);
+	}
+
+	public override float GetHP()
+	{
+		print("why");
+		return hp;
+	}
+
+	public override void Heal()
+	{
+		
 	}
 }

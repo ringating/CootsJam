@@ -7,6 +7,11 @@ public class Hand : Hurtable
     public AudioSource audioSource;
     public HandAnimationStuff animEventsScript;
 
+    public float maxHP = 1000f;
+    float hp;
+
+    public Collider col;
+
     public enum BossVersion 
     {
         melee,
@@ -42,6 +47,8 @@ public class Hand : Hurtable
 
         timer = 0;
         moveDurationToTargetPosition = 1;
+
+        col.enabled = false;
     }
 
 	public void MoveToPositionRelativeToCoots(Vector3 relativeToCoots, float moveTime)
@@ -101,5 +108,33 @@ public class Hand : Hurtable
         shake.Shake(attack.hitShakeDuration);
         CameraShake.instance.AddShake(attack.camShakeDuration, attack.camShakeMagnitude, attack.camShakeFrequency);
         audioSource.PlayOneShot(attack.toPlayOnHit, attack.toPlayOnHitVolume);
+        hp -= attack.damage;
+        if (hp <= 0)
+        {
+            switch (bossVersion)
+            {
+                case BossVersion.melee:
+                    Flags.defeatedKatanaBoss = true;
+                    break;
+
+                case BossVersion.ranged:
+                    Flags.defeatedGunBoss = true;
+                    break;
+
+                case BossVersion.final:
+                    WinScreen.winScreen.SetActive(true);
+                    break;
+            }
+        }
     }
+
+	public override float GetHP()
+	{
+        return hp;
+	}
+
+	public override void Heal()
+	{
+        hp = maxHP;
+	}
 }

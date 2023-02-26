@@ -66,6 +66,7 @@ public class HandAnimationStuff : MonoBehaviour
 	{
 		HideAllMeshRenderers();
 		animator.CrossFade("hidden", 0);
+		hand.col.enabled = false;
 	}
 
 	public PlayShockwave shockwaveScript;
@@ -139,5 +140,15 @@ public class HandAnimationStuff : MonoBehaviour
 					animator.CrossFade("gun flurry", 0);
 				break;
 		}
+	}
+
+	public void EnableCollider() 
+	{
+		hand.col.enabled = true;
+	}
+
+	public void FirstSpawn()
+	{
+		animator.CrossFade("spawn from below", 0);
 	}
 }

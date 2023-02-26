@@ -469,4 +469,14 @@ public class CootsController : Hurtable
 
         rb.position = new Vector3(fallRespawnPoint.x, 0, fallRespawnPoint.z); // just assumes the player is always at y=0, but change this if that ever becomes not always true
     }
+
+	public override float GetHP()
+	{
+        return CootsHP.instance.hp;
+	}
+
+	public override void Heal()
+	{
+        Debug.LogError("uhhhh");
+	}
 }
