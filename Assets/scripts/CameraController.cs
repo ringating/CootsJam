@@ -59,6 +59,8 @@ public class CameraController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         pastTargets = new List<TargetAndTime>();
+
+        transitionTimer = targetTransitionDuration; // start out fully transitioned to the current state
     }
 
     void LateUpdate()

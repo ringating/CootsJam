@@ -122,7 +122,7 @@ public class Hand : Hurtable
                     break;
 
                 case BossVersion.final:
-                    WinScreen.winScreen.SetActive(true);
+                    WinScreen.ShowWinScreen();
                     break;
             }
         }
